@@ -42,7 +42,7 @@ async function dbConnector(fastify: FastifyInstance, options: DatabaseOptions) {
               fastify.log.error("Error creating sports table: %s", err.message);
               reject(err);
             } else {
-              fastify.log.info("Database schema initialized");
+              fastify.log.info("Sports table initialized");
               resolve(undefined);
             }
           }
@@ -52,7 +52,8 @@ async function dbConnector(fastify: FastifyInstance, options: DatabaseOptions) {
           CREATE TABLE IF NOT EXISTS teams (
             team_id INTEGER PRIMARY KEY AUTOINCREMENT,
             team_name TEXT NOT NULL,
-            team_city TEXT NOT NULL
+            team_city TEXT NOT NULL,
+            UNIQUE (team_name, team_city)
             )
             `,
           (err) => {
@@ -60,7 +61,7 @@ async function dbConnector(fastify: FastifyInstance, options: DatabaseOptions) {
               fastify.log.error("Error creating teams table: %s", err.message);
               reject(err);
             } else {
-              fastify.log.info("Database schema initialized");
+              fastify.log.info("Teams table initialized");
               resolve(undefined);
             }
           }
@@ -86,7 +87,7 @@ async function dbConnector(fastify: FastifyInstance, options: DatabaseOptions) {
               fastify.log.error("Error creating teams table: %s", err.message);
               reject(err);
             } else {
-              fastify.log.info("Database schema initialized");
+              fastify.log.info("Events table initialized");
               resolve(undefined);
             }
           }
@@ -103,7 +104,7 @@ async function dbConnector(fastify: FastifyInstance, options: DatabaseOptions) {
   }
 
   fastify.decorate("db", db);
-  
+
   fastify.addHook("onClose", async (instance) => {
     return new Promise<void>((resolve, reject) => {
       instance.db.close((err: Error | null) => {
