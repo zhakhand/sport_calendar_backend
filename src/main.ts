@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import dbConnector from "./database.ts";
 import {config, validateConfig} from "./config.ts";
+import {routes} from "./routes/index.ts";
 
 validateConfig();
 
@@ -8,8 +9,7 @@ const app = Fastify({logger: true});
 
 await app.register(dbConnector, {path: config.database.path});
 
-// // /health and /ready
-// await app.register(checkRoutes);
+await app.register(routes);
 
 // // /info/teams /info/teams/teams/:teamId
 // await app.register(teamRoutes);
