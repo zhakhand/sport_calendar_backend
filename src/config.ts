@@ -10,12 +10,7 @@ export const config = {
   // Database configuration
   database: {
     path: process.env.DATABASE_PATH || "./data/database.db",
-  },
-
-  // Logging
-  logging: {
-    level: process.env.LOG_LEVEL || "error",
-  },
+  }
 };
 
 // Validate configuration and log startup info
@@ -24,8 +19,7 @@ export const validateConfig = () => {
     port: config.server.port,
     host: config.server.host,
     env: config.server.env,
-    databasePath: config.database.path,
-    logLevel: config.logging.level,
+    databasePath: config.database.path
   });
 
   // Validate port is a valid number
