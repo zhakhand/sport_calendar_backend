@@ -24,4 +24,29 @@ export const teamHandlers = {
         }
         return reply.status(200).send(teams);
     },
+
+    teamInfo: async(request: FastifyRequest<{Params: {teamId?: number}}>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { teamId } = request.params;
+
+        if (!teamId || isNaN(teamId)) {
+            return reply.status(400).send({error: "Valid Team ID is required"});
+        }
+
+        const team = await new Promise<Teams | null>((resolve, reject) => {
+            db.get('SELECT * FROM teams WHERE team_id = ?', [teamId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row as Teams || null);
+                }
+            });
+        });
+
+        if (!team) {
+            return reply.status(404).send({error: "Team not found!"});
+        }
+
+        return reply.status(200).send(team);
+    }
 }
