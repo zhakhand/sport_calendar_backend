@@ -8,7 +8,7 @@
 # Team Info Routes
 
 - **Getting list of all teams:**
-    - *GET `${HOST}:${PORT}/info/teams` returns an array of json objects structured as following
+    - *GET `${HOST}:${PORT}/info/teams`* returns an array of json objects structured as following
     ```js
     {
         team_id: number,
