@@ -146,11 +146,20 @@ export const sportHandlers = {
         const result = await new Promise<{ lastID: number }>((resolve, reject) => {
             db.run('INSERT INTO sports (sport_name) VALUES (?)', [sport_name], function(err) {
                 if (err) {
+                    if (err.message.includes("UNIQUE constraint failed")) {
+                        reject (new Error("Sport already exists"));
+                        return;
+                    }
                     reject(err);
                 } else {
                     resolve({ lastID: this.lastID });
                 }
             });
+        }).catch((err) => {
+            if (err.message === "Sport already exists") {
+                return reply.status(409).send({error: err.message});
+            }
+            return reply.status(500).send({error: err.message});
         });
 
         return reply.status(201).send({message: "Sport added successfully", sportId: result.lastID});
