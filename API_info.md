@@ -82,6 +82,7 @@
         event_id: number,
         event_time: string,
         event_date: string,
+        location: string,
         home_team_name: string,
         away_team_name: string,
         sport_name: string,
@@ -92,3 +93,103 @@
     - **Error:**
         - **returns 404 if no events found for specific sport**
         - **returns 400 if parameters is not valid**
+
+# Event Info Routes
+
+- **Getting list of all events:**
+    - *GET `${HOST}:${PORT}/info/events`* returns an array of json objects structured as following
+    ```js
+    {
+        event_id: number,
+        event_date: string,
+        event_time: string,
+        location: string,
+        home_team_name: string,
+        away_team_name: string,
+        sport_name: string,
+        day_of_week: string,
+        weekday_name: string
+    }[]
+    ```
+    - Events are ordered by date and time.
+
+- **Getting event info by event_id:**
+    - *GET `${HOST}:${PORT}/info/events/:id`* returns a json object of an event with a matching event_id from the database as following
+    ```js
+    {
+        event_id: number,
+        event_date: string,
+        event_time: string,
+        location: string,
+        home_team_name: string,
+        away_team_name: string,
+        sport_name: string,
+        day_of_week: string,
+        weekday_name: string
+    }
+    ```
+    - **Error:** 
+        - **returns 404 if event not found.**
+
+- **Getting events by location:**
+    - *GET `${HOST}:${PORT}/info/events/search/location/:location`* returns an array of event json objects with matching location (city). (`Los Angeles` as a parameter will return all events where home team is from Los Angeles).
+    - **Error:** 
+        - **returns 400 if no/empty parameter given.**
+        - **returns 404 if no events found.**
+
+- **Getting events by date:**
+    - *GET `${HOST}:${PORT}/info/events/search/date/:date`* returns an array of event json objects with matching date. (Date format: `YYYY-MM-DD`, e.g., `2025-10-27`)
+    - **Error:**
+        - **returns 400 if no/empty parameter given.**
+        - **returns 404 if no events found.**
+
+- **Getting events by team name:**
+    - *GET `${HOST}:${PORT}/info/events/search/team/:teamName`* returns an array of event json objects where the specified team is either home or away team.
+    - **Error:**
+        - **returns 400 if no/empty parameter given.**
+        - **returns 404 if no events found.**
+
+- **Adding new event to database:**
+    - *POST `${HOST}:${PORT}/info/events`* with a json object in its body given as
+    ```js
+    {
+        date: "2025-10-27",
+        time: "19:00",
+        home_team_name: "Lakers",
+        home_team_city: "Los Angeles",
+        away_team_name: "Warriors",
+        away_team_city: "San Francisco",
+        sport_name: "Basketball"
+    }
+    ```
+    - **Upon successful addition of event client receives 201 with a json object `{event_id: 123}`.**
+    - If teams or sport don't exist, they will be automatically created.
+    - **Error:**
+        - **returns 409 if event already exists (same teams, date, and time).**
+        - **returns 500 upon Database error.**
+
+- **Updating an event:**
+    - *PUT `${HOST}:${PORT}/info/events/:id`* with a json object in its body. All fields are optional:
+    ```js
+    {
+        date?: "2025-10-28",
+        time?: "20:00",
+        home_team_name?: "Lakers",
+        home_team_city?: "Los Angeles",
+        away_team_name?: "Celtics",
+        away_team_city?: "Boston",
+        sport_name?: "Basketball"
+    }
+    ```
+    - **Upon successful update client receives 200 with `{message: 'Event updated successfully'}`.**
+    - If new teams or sport don't exist, they will be automatically created.
+    - **Error:**
+        - **returns 404 if event not found.**
+        - **returns 500 upon Database error.**
+
+- **Deleting an event:**
+    - *DELETE `${HOST}:${PORT}/info/events/:id`* deletes the event with the specified ID.
+    - **Upon successful deletion client receives 200 with `{message: 'Event deleted successfully'}`.**
+    - **Error:**
+        - **returns 404 if event not found.**
+        - **returns 500 upon Database error.**

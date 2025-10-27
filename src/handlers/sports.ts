@@ -1,9 +1,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 
-declare interface Events {
+declare interface Event {
     event_id: number,
     event_time: string,
     event_date: string,
+    location: string,
     home_team_name: string,
     away_team_name: string,
     sport_name: string,
@@ -43,12 +44,13 @@ export const sportHandlers = {
             return reply.status(400).send({error: "Valid Sport ID is required"});
         }
 
-        const events = await new Promise<Events[]>((resolve, reject) => {
+        const events = await new Promise<Event[]>((resolve, reject) => {
             db.all(
                 `SELECT 
                     e.event_id,
                     e.event_date,
                     e.event_time,
+                    ht.team_city as location,
                     ht.team_name as home_team_name,
                     at.team_name as away_team_name,
                     s.sport_name,
@@ -72,7 +74,7 @@ export const sportHandlers = {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(rows as Events[] || []);
+                        resolve(rows as Event[] || []);
                     }
                 }
             );
@@ -93,12 +95,13 @@ export const sportHandlers = {
             return reply.status(400).send({error: "Sport name is required"});
         }
 
-        const events = await new Promise<Events[]>((resolve, reject) => {
+        const events = await new Promise<Event[]>((resolve, reject) => {
             db.all(
                 `SELECT 
                     e.event_id,
                     e.event_date,
                     e.event_time,
+                    ht.team_city as location,
                     ht.team_name as home_team_name,
                     at.team_name as away_team_name,
                     s.sport_name,
@@ -122,7 +125,7 @@ export const sportHandlers = {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(rows as Events[] || []);
+                        resolve(rows as Event[] || []);
                     }
                 }
             );
