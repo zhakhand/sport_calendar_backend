@@ -111,11 +111,19 @@ export const teamHandlers = {
         const result = await new Promise<{ lastID: number }>((resolve, reject) => {
             db.run('INSERT INTO teams (team_name, team_city) VALUES (?, ?)', [team_name, city], function(err) {
                 if (err) {
+                    if (err.message.includes('UNIQUE constraint failed')) {
+                        reject(new Error('Team already exists'));
+                    }
                     reject(err);
                 } else {
                     resolve({ lastID: this.lastID });
                 }
             });
+        }).catch(err => {
+            if (err.message === 'Team already exists') {
+                return reply.status(409).send({error: "Team already exists"});
+            }
+            throw err;
         });
 
         return reply.status(201).send({message: "Team added successfully", teamId: result.lastID});
