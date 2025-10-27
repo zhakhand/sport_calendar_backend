@@ -113,6 +113,7 @@ export const teamHandlers = {
                 if (err) {
                     if (err.message.includes('UNIQUE constraint failed')) {
                         reject(new Error('Team already exists'));
+                        return;
                     }
                     reject(err);
                 } else {
