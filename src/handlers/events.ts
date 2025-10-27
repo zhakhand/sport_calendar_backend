@@ -441,7 +441,7 @@ export const eventHandlers = {
                     if (err) {
                         reject(err);
                     } else {
-                        console.log('Rows affected:', this.changes);
+                        request.log.info({ rowsAffected: this.changes }, 'Event deleted');
                         resolve();
                     }
                 }
