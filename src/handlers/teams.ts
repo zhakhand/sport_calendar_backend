@@ -124,7 +124,7 @@ export const teamHandlers = {
             if (err.message === 'Team already exists') {
                 return reply.status(409).send({error: "Team already exists"});
             }
-            throw err;
+            return reply.status(500).send({error: err.message});
         });
 
         return reply.status(201).send({message: "Team added successfully", teamId: result.lastID});

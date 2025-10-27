@@ -54,3 +54,41 @@
     - **Error:**
         - **returns 400 on a bad request body. (Missing/invalid fields)**
         - **returns 500 upon Database error or 409 upon violation of UNIQUE constraint**
+
+# Sport Info Routes
+
+- **Getting Sports List:**
+    - *GET `${HOST}:${PORT}/info/sports`* returns an array of sports json objects defined as
+    ```js
+    {
+        sport_id: 123,
+        sport_name: Basketball
+    }
+    ``` 
+    - **Error:**
+        - **returns 404 if sports table is empty.**
+
+- **Adding Sports:**
+    - *POST `${HOST}:${PORT}/info/sports` with request body defined as `{sport_name: string}`* adds a sport to a sports table returning json object defined as `{message: 'Sport added successfully', sportId: 123}` with status 201.
+    - **Error:**
+        - **returns 409 if sport already exists**
+        - **returns 400 if request body is not well defined**
+        - **return 500 on DB errors**
+
+- **Getting Events based on Sports ID or Name:**
+    - *GET `${HOST}:${PORT}/info/events/search/<sportID/sportName>/<:sportId/:sportName>`* returns an array of event json objects defined as
+    ```js
+    {
+        event_id: number,
+        event_time: string,
+        event_date: string,
+        home_team_name: string,
+        away_team_name: string,
+        sport_name: string,
+        day_of_week: string,
+        weekday_name: string
+    }
+    ```
+    - **Error:**
+        - **returns 404 if no events found for specific sport**
+        - **returns 400 if parameters is not valid**
