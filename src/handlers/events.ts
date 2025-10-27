@@ -4,6 +4,7 @@ declare interface Event {
     id: string;
     time: string;
     date: string;
+    location: string;
     homeTeam: string;
     awayTeam: string;
     sport: string;
@@ -21,6 +22,7 @@ export const eventHandlers = {
                     e.event_id,
                     e.event_date,
                     e.event_time,
+                    ht.team_city as location,
                     ht.team_name as home_team_name,
                     at.team_name as away_team_name,
                     s.sport_name,
@@ -62,6 +64,7 @@ export const eventHandlers = {
                     e.event_id,
                     e.event_date,
                     e.event_time,
+                    ht.team_city as location,
                     ht.team_name as home_team_name,
                     at.team_name as away_team_name,
                     s.sport_name,

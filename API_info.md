@@ -82,6 +82,7 @@
         event_id: number,
         event_time: string,
         event_date: string,
+        location: string,
         home_team_name: string,
         away_team_name: string,
         sport_name: string,
