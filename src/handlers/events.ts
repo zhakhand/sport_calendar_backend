@@ -213,6 +213,61 @@ export const eventHandlers = {
         return reply.status(200).send(events);
     },
 
+    getSpecificEvent: async (request: FastifyRequest<{ Querystring: {
+        date: string;
+        home_team_name: string;
+        away_team_name: string;
+    } }>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { date, home_team_name, away_team_name } = request.query;
+
+        if (!date || !home_team_name || !away_team_name) {
+            return reply.status(400).send({ error: "Date, home team name, and away team name are required" });
+        }
+
+        const event = await new Promise<Event | null>((resolve, reject) => {
+            db.get(
+                `SELECT 
+                    e.event_id,
+                    e.event_date,
+                    e.event_time,
+                    ht.team_city as location,
+                    ht.team_name as home_team_name,
+                    at.team_name as away_team_name,
+                    s.sport_name,
+                    strftime('%w', e.event_date) as day_of_week,
+                    CASE strftime('%w', e.event_date)
+                        WHEN '0' THEN 'Sunday'
+                        WHEN '1' THEN 'Monday'
+                        WHEN '2' THEN 'Tuesday'
+                        WHEN '3' THEN 'Wednesday'
+                        WHEN '4' THEN 'Thursday'
+                        WHEN '5' THEN 'Friday'
+                        WHEN '6' THEN 'Saturday'
+                    END as weekday_name
+                FROM events e
+                JOIN teams ht ON e._home_team_id = ht.team_id
+                JOIN teams at ON e._away_team_id = at.team_id
+                JOIN sports s ON e._sport_id = s.sport_id
+                WHERE e.event_date = ? AND  ht.team_name = ? AND at.team_name = ?`,
+                [date, home_team_name, away_team_name],
+                (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row as Event || null);
+                    }
+                }
+            );
+        });
+
+        if (!event) {
+            return reply.status(404).send({ error: "Event not found" });
+        }
+
+        return reply.status(200).send(event);
+    },
+
     getEventsByTeamName: async (request: FastifyRequest<{ Params: { teamName: string } }>, reply: FastifyReply) => {
         const db = await request.server.db;
         const { teamName } = request.params;

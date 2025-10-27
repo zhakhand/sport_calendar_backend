@@ -143,6 +143,16 @@
         - **returns 400 if no/empty parameter given.**
         - **returns 404 if no events found.**
 
+- **Getting a specific event:**
+    - *GET `${HOST}:${PORT}/info/events/search/specific?date=YYYY-MM-DD&home_team_name=TeamName&away_team_name=TeamName`* returns a single event json object matching the exact date and team names.
+    - Query parameters (all required):
+        - `date`: Date in format `YYYY-MM-DD`
+        - `home_team_name`: Exact name of home team
+        - `away_team_name`: Exact name of away team
+    - **Error:**
+        - **returns 400 if any required parameter is missing.**
+        - **returns 404 if no event found with specified criteria.**
+
 - **Getting events by team name:**
     - *GET `${HOST}:${PORT}/info/events/search/team/:teamName`* returns an array of event json objects where the specified team is either home or away team.
     - **Error:**
