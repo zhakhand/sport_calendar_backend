@@ -13,6 +13,15 @@ declare interface Event {
     weekday_name: string;
 }
 
+declare interface UpdateEvent {
+    id: string;
+    time: string;
+    date: string;
+    homeTeamId: number;
+    awayTeamId: number;
+    sportId: number;
+}
+
 export const eventHandlers = {
     getAllEvents: async (request: FastifyRequest, reply: FastifyReply) => {
         const db = await request.server.db;
@@ -309,5 +318,92 @@ export const eventHandlers = {
         });
 
         return reply.status(201).send({ event_id: result.lastID });
+    },
+
+    updateEvent: async (request: FastifyRequest<{ Params: { id: number }; Body: {
+        date?: string;
+        time?: string;
+        home_team_name?: string;
+        home_team_city?: string;
+        away_team_name?: string;
+        away_team_city?: string;
+        sport_name?: string;
+    } }>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { id } = request.params;
+        const {
+            date,
+            time,
+            home_team_name,
+            home_team_city,
+            away_team_name,
+            away_team_city,
+            sport_name,
+        } = request.body;
+
+        // Check if event exists
+        const existingEvent = await new Promise<UpdateEvent | null>((resolve, reject) => {
+            db.get(
+                `SELECT 
+                    e.event_id,
+                    e.event_date,
+                    e.event_time,
+                    e._home_team_id,
+                    e._away_team_id,
+                    e._sport_id
+                FROM events e
+                WHERE e.event_id = ?`,
+                [id],
+                (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row as UpdateEvent || null);
+                    }
+                }
+            );
+        });
+
+        if (!existingEvent) {
+            return reply.status(404).send({ error: "Event not found" });
+        }
+
+        // Prepare updated fields
+        const updatedDate = date || existingEvent.date;
+        const updatedTime = time || existingEvent.time;
+
+        // Update sport if provided
+        let sportId = existingEvent.sportId;
+        if (sport_name) {
+            sportId = await getOrCreateSport(db, sport_name);
+        }
+
+        // Update home team if provided
+        let homeTeamId = existingEvent.homeTeamId;
+        if (home_team_name && home_team_city) {
+            homeTeamId = await getOrCreateTeam(db, home_team_name, home_team_city);
+        }
+
+        // Update away team if provided
+        let awayTeamId = existingEvent.awayTeamId;
+        if (away_team_name && away_team_city) {
+            awayTeamId = await getOrCreateTeam(db, away_team_name, away_team_city);
+        }
+        // Update event
+        await new Promise<void>((resolve, reject) => {
+            db.run(
+                `UPDATE events SET event_date = ?, event_time = ?, _home_team_id = ?, _away_team_id = ?, _sport_id = ? WHERE event_id = ?`,
+                [updatedDate, updatedTime, homeTeamId, awayTeamId, sportId, id],
+                function (this: any, err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                }
+            );
+        });
+
+        return reply.status(200).send({ message: "Event updated successfully" });
     },
 };

@@ -20,7 +20,7 @@ export async function eventRoutes(app: FastifyInstance) {
 
   app.post("/info/events", eventHandlers.createEvent);
 
-//   app.put("/info/events/:id", eventHandlers.updateEvent);
+  app.put("/info/events/:id", eventHandlers.updateEvent);
 
 //   app.delete("/info/events/:id", eventHandlers.deleteEvent);
 }
