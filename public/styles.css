@@ -1,0 +1,261 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', Helvetica, sans-serif;
+    background: linear-gradient(135deg, #7cc687 0%, #3ed06c 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(180, 177, 177, 0.524);
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #33b547 0%, #3ed06c 100%);
+    color: rgb(255, 255, 255);
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.content {
+    padding: 30px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    color: #034a2d;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    border-bottom: 3px solid #66ea75;
+    padding-bottom: 10px;
+}
+
+.search-form,
+.add-form {
+    display: grid;
+    gap: 15px;
+    background: rgba(180, 177, 177, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input,
+select {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #d0ea66;
+}
+
+button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #85ea66 0%, #8cb447 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 91, 7, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #20c76e 0%, #22ad4e 100%);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.event-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 15px;
+}
+
+.event-sport {
+    background: linear-gradient(135deg, #0f9613 0%, #71ac24 100%);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.event-id {
+    color: #999;
+    font-size: 12px;
+}
+
+.event-teams {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 10px 0;
+    color: #333;
+}
+
+.event-details {
+    display: grid;
+    gap: 8px;
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.event-detail {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.event-detail strong {
+    margin-right: 8px;
+    color: #333;
+}
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.event-actions button {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #2e651d;
+    font-size: 1.2em;
+}
+
+.error {
+    background: #fee;
+    color: #c33;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c33;
+}
+
+.success {
+    background: #efe;
+    color: #3c3;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3c3;
+}
+
+.no-events {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 1.1em;
+}
+
+.search-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tab {
+    padding: 10px 20px;
+    background: #75de60;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.tab.active {
+    background: #c6d500;
+    color: #ffffff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
