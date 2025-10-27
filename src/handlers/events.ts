@@ -64,7 +64,7 @@ export const eventHandlers = {
         return reply.status(200).send(events);
     },
 
-    getEventById: async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    getEventById: async (request: FastifyRequest<{ Params: { id: number } }>, reply: FastifyReply) => {
         const db = await request.server.db;
         const { id } = request.params;
 
@@ -398,6 +398,7 @@ export const eventHandlers = {
                     if (err) {
                         reject(err);
                     } else {
+                        console.log('Rows affected:', this.changes);
                         resolve();
                     }
                 }
@@ -406,4 +407,46 @@ export const eventHandlers = {
 
         return reply.status(200).send({ message: "Event updated successfully" });
     },
+
+    deleteEvent: async (request: FastifyRequest<{ Params: { id: number } }>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { id } = request.params;
+
+        // Check if event exists
+        const existingEvent = await new Promise<boolean>((resolve, reject) => {
+            db.get(
+                `SELECT event_id FROM events WHERE event_id = ?`,
+                [id],
+                (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(!!row);
+                    }
+                }
+            );
+        });
+
+        if (!existingEvent) {
+            return reply.status(404).send({ error: "Event not found" });
+        }
+
+        // Delete event
+        await new Promise<void>((resolve, reject) => {
+            db.run(
+                `DELETE FROM events WHERE event_id = ?`,
+                [id],
+                function (this: any, err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log('Rows affected:', this.changes);
+                        resolve();
+                    }
+                }
+            );
+        });
+
+        return reply.status(200).send({ message: "Event deleted successfully" });
+    }
 };
