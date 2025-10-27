@@ -147,7 +147,7 @@ export const sportHandlers = {
             db.run('INSERT INTO sports (sport_name) VALUES (?)', [sport_name], function(err) {
                 if (err) {
                     if (err.message.includes("UNIQUE constraint failed")) {
-                        reject (new Error("Sport already exists"));
+                        reject(new Error("Sport already exists"));
                         return;
                     }
                     reject(err);
