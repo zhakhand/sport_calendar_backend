@@ -84,7 +84,7 @@ export const teamHandlers = {
         }
 
         const teams = await new Promise<Teams[]>((resolve, reject) => {
-            db.all('SELECT * FROM teams WHERE city LIKE ?', [`%${cityName}%`], (err, rows) => {
+            db.all('SELECT * FROM teams WHERE team_city LIKE ?', [`%${cityName}%`], (err, rows) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -99,4 +99,25 @@ export const teamHandlers = {
 
         return reply.status(200).send(teams);
     },
+
+    addTeam: async(request: FastifyRequest<{Body: {team_name: string, city: string}}>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { team_name, city } = request.body;
+
+        if (!team_name || !city) {
+            return reply.status(400).send({error: "Team name and city are required"});
+        }
+
+        const result = await new Promise<{ lastID: number }>((resolve, reject) => {
+            db.run('INSERT INTO teams (team_name, team_city) VALUES (?, ?)', [team_name, city], function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ lastID: this.lastID });
+                }
+            });
+        });
+
+        return reply.status(201).send({message: "Team added successfully", teamId: result.lastID});
+    }
 };

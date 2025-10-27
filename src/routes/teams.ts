@@ -11,6 +11,6 @@ export async function teamRoutes(app: FastifyInstance) {
 
     app.get('/info/teams/city/:cityName', teamHandlers.teamsByCity);
 
-    //app.post('info/teams', teamHandlers.addTeam);
+    app.post('/info/teams', teamHandlers.addTeam);
 
 };
