@@ -1,6 +1,5 @@
-import { create } from "domain";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { get } from "http";
+import { getOrCreateSport, getOrCreateTeam } from "../utils/events.ts";
 
 declare interface Event {
     id: string;
@@ -256,7 +255,59 @@ export const eventHandlers = {
         return reply.status(200).send(events);
     },
 
-    createEvent: async (request: FastifyRequest<{ Body: { } }>, reply: FastifyReply) => {
-        
+    createEvent: async (request: FastifyRequest<{ Body: {
+        date: string;
+        time: string;
+        home_team_name: string;
+        home_team_city: string;
+        away_team_name: string;
+        away_team_city: string;
+        sport_name: string;
+    } }>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const {
+            date,
+            time,
+            home_team_name,
+            home_team_city,
+            away_team_name,
+            away_team_city,
+            sport_name,
+        } = request.body;
+
+        // Check if sport exists
+        let sportId: number;
+        sportId = await getOrCreateSport(db, sport_name);
+        // Check if home team exists
+        let homeTeamId: number;
+        homeTeamId = await getOrCreateTeam(db, home_team_name, home_team_city);
+        // Check if away team exists
+        let awayTeamId: number;
+        awayTeamId = await getOrCreateTeam(db, away_team_name, away_team_city);
+
+        // Insert new event
+        const result = await new Promise<{ lastID: number }>((resolve, reject) => {
+            db.run(
+                `INSERT INTO events (event_date, event_time, _home_team_id, _away_team_id, _sport_id) VALUES (?, ?, ?, ?, ?)`,
+                [date, time, homeTeamId, awayTeamId, sportId],
+                function (this: any, err) {
+                    if (err) {
+                        if (err.message.includes("UNIQUE constraint failed")) {
+                            return reject(new Error("Event already exists"));
+                        }
+                        reject(err);
+                    } else {
+                        resolve({ lastID: this.lastID });
+                    }
+                }
+            );
+        }).catch((error) => {
+            if (error.message === "Event already exists") {
+                return reply.status(409).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: error.message });
+        });
+
+        return reply.status(201).send({ event_id: result.lastID });
     },
 };

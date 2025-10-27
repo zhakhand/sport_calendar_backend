@@ -18,9 +18,9 @@ export async function eventRoutes(app: FastifyInstance) {
     eventHandlers.getEventsByTeamName
   );
 
-  //  app.post("/info/events", eventHandlers.createEvent);
+  app.post("/info/events", eventHandlers.createEvent);
 
-  //   app.put("/info/events/:id", eventHandlers.updateEvent);
+//   app.put("/info/events/:id", eventHandlers.updateEvent);
 
-  //   app.delete("/info/events/:id", eventHandlers.deleteEvent);
+//   app.delete("/info/events/:id", eventHandlers.deleteEvent);
 }
