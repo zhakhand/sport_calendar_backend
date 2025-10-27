@@ -13,6 +13,8 @@ export async function eventRoutes(app: FastifyInstance) {
 
   app.get("/info/events/search/date/:date", eventHandlers.getEventsByDate);
 
+  app.get("/info/events/search/specific", eventHandlers.getSpecificEvent);
+
   app.get(
     "/info/events/search/team/:teamName",
     eventHandlers.getEventsByTeamName
