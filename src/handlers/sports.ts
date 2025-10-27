@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 
-declare interface Events {
+declare interface Event {
     event_id: number,
     event_time: string,
     event_date: string,
@@ -43,7 +43,7 @@ export const sportHandlers = {
             return reply.status(400).send({error: "Valid Sport ID is required"});
         }
 
-        const events = await new Promise<Events[]>((resolve, reject) => {
+        const events = await new Promise<Event[]>((resolve, reject) => {
             db.all(
                 `SELECT 
                     e.event_id,
@@ -72,7 +72,7 @@ export const sportHandlers = {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(rows as Events[] || []);
+                        resolve(rows as Event[] || []);
                     }
                 }
             );
@@ -93,7 +93,7 @@ export const sportHandlers = {
             return reply.status(400).send({error: "Sport name is required"});
         }
 
-        const events = await new Promise<Events[]>((resolve, reject) => {
+        const events = await new Promise<Event[]>((resolve, reject) => {
             db.all(
                 `SELECT 
                     e.event_id,
@@ -122,7 +122,7 @@ export const sportHandlers = {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(rows as Events[] || []);
+                        resolve(rows as Event[] || []);
                     }
                 }
             );
