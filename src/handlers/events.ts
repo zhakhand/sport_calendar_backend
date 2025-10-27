@@ -295,29 +295,30 @@ export const eventHandlers = {
         awayTeamId = await getOrCreateTeam(db, away_team_name, away_team_city);
 
         // Insert new event
-        const result = await new Promise<{ lastID: number }>((resolve, reject) => {
-            db.run(
-                `INSERT INTO events (event_date, event_time, _home_team_id, _away_team_id, _sport_id) VALUES (?, ?, ?, ?, ?)`,
-                [date, time, homeTeamId, awayTeamId, sportId],
-                function (this: any, err) {
-                    if (err) {
-                        if (err.message.includes("UNIQUE constraint failed")) {
-                            return reject(new Error("Event already exists"));
+        try {
+            const result = await new Promise<{ lastID: number }>((resolve, reject) => {
+                db.run(
+                    `INSERT INTO events (event_date, event_time, _home_team_id, _away_team_id, _sport_id) VALUES (?, ?, ?, ?, ?)`,
+                    [date, time, homeTeamId, awayTeamId, sportId],
+                    function (this: any, err) {
+                        if (err) {
+                            if (err.message.includes("UNIQUE constraint failed")) {
+                                return reject(new Error("Event already exists"));
+                            }
+                            reject(err);
+                        } else {
+                            resolve({ lastID: this.lastID });
                         }
-                        reject(err);
-                    } else {
-                        resolve({ lastID: this.lastID });
                     }
-                }
-            );
-        }).catch((error) => {
+                );
+            });
+            return reply.status(201).send({ event_id: result.lastID });
+        } catch (error: any) {
             if (error.message === "Event already exists") {
                 return reply.status(409).send({ error: error.message });
             }
             return reply.status(500).send({ error: error.message });
-        });
-
-        return reply.status(201).send({ event_id: result.lastID });
+        }
     },
 
     updateEvent: async (request: FastifyRequest<{ Params: { id: number }; Body: {
