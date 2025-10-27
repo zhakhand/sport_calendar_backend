@@ -48,5 +48,55 @@ export const teamHandlers = {
         }
 
         return reply.status(200).send(team);
-    }
-}
+    },
+
+    teamSearch: async(request: FastifyRequest<{Params: {teamName?: string}}>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { teamName } = request.params;
+
+        if (!teamName) {
+            return reply.status(400).send({error: "Team name is required"});
+        }
+
+        const teams = await new Promise<Teams[]>((resolve, reject) => {
+            db.all('SELECT * FROM teams WHERE team_name LIKE ?', [`%${teamName}%`], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows as Teams[] || []);
+                }
+            });
+        });
+
+        if (!teams || !teams.length) {
+            return reply.status(404).send({error: "No teams found!"});
+        }
+
+        return reply.status(200).send(teams);
+    },
+
+    teamsByCity: async(request: FastifyRequest<{Params: {cityName?: string}}>, reply: FastifyReply) => {
+        const db = await request.server.db;
+        const { cityName } = request.params;
+
+        if (!cityName) {
+            return reply.status(400).send({error: "City name is required"});
+        }
+
+        const teams = await new Promise<Teams[]>((resolve, reject) => {
+            db.all('SELECT * FROM teams WHERE city LIKE ?', [`%${cityName}%`], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows as Teams[] || []);
+                }
+            });
+        });
+
+        if (!teams || !teams.length) {
+            return reply.status(404).send({error: "No teams found!"});
+        }
+
+        return reply.status(200).send(teams);
+    },
+};
