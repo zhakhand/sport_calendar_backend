@@ -1,4 +1,4 @@
-.PHONY: help build up down restart logs clean rebuild test shell
+.PHONY: help build up down restart logs clean rebuild shell
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
