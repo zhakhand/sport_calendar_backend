@@ -14,12 +14,12 @@ declare interface Event {
 }
 
 declare interface UpdateEvent {
-    id: string;
-    time: string;
-    date: string;
-    homeTeamId: number;
-    awayTeamId: number;
-    sportId: number;
+    event_id: number;
+    event_time: string;
+    event_date: string;
+    _home_team_id: number;
+    _away_team_id: number;
+    _sport_id: number;
 }
 
 export const eventHandlers = {
@@ -425,23 +425,23 @@ export const eventHandlers = {
         }
 
         // Prepare updated fields
-        const updatedDate = date || existingEvent.date;
-        const updatedTime = time || existingEvent.time;
+        const updatedDate = date || existingEvent.event_date;
+        const updatedTime = time || existingEvent.event_time;
 
         // Update sport if provided
-        let sportId = existingEvent.sportId;
+        let sportId = existingEvent._sport_id;
         if (sport_name) {
             sportId = await getOrCreateSport(db, sport_name);
         }
 
         // Update home team if provided
-        let homeTeamId = existingEvent.homeTeamId;
+        let homeTeamId = existingEvent._home_team_id;
         if (home_team_name && home_team_city) {
             homeTeamId = await getOrCreateTeam(db, home_team_name, home_team_city);
         }
 
         // Update away team if provided
-        let awayTeamId = existingEvent.awayTeamId;
+        let awayTeamId = existingEvent._away_team_id;
         if (away_team_name && away_team_city) {
             awayTeamId = await getOrCreateTeam(db, away_team_name, away_team_city);
         }
