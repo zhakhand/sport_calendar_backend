@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+*.md
+.vscode
+.devcontainer
+coverage
+.jest-cache
+*.test.ts
+__tests__
+data/*.db
+test-database.db
