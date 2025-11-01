@@ -52,6 +52,7 @@ function displayEvents(events) {
                         </div>
                     </div>
                     <div class="event-actions">
+                        <button class="btn-secondary" onclick="showUpdateForm(${event.event_id}, '${event.event_date}', '${event.event_time}', '${event.home_team_name.replace(/'/g, "\\'")}', '${event.away_team_name.replace(/'/g, "\\'")}', '${event.sport_name.replace(/'/g, "\\'")}', '${event.location.replace(/'/g, "\\'")}')">Update</button>
                         <button class="btn-danger" onclick="deleteEvent(${event.event_id})">Delete</button>
                     </div>
                 </div>
@@ -250,6 +251,116 @@ async function deleteEvent(eventId) {
         }
     } catch (error) {
         showMessage(`Error deleting event: ${error.message}`, 'error');
+    }
+}
+
+function showUpdateForm(eventId, date, time, homeTeam, awayTeam, sport, location) {
+    // Create modal HTML
+    const modal = document.createElement('div');
+    modal.id = 'updateModal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <h2>Update Event #${eventId}</h2>
+            <form class="add-form" onsubmit="updateEvent(event, ${eventId})">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="updateEventDate">Date *</label>
+                        <input type="date" id="updateEventDate" value="${date}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEventTime">Time *</label>
+                        <input type="time" id="updateEventTime" value="${time}" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="updateHomeTeamName">Home Team Name *</label>
+                        <input type="text" id="updateHomeTeamName" value="${homeTeam}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateHomeTeamCity">Home Team City *</label>
+                        <input type="text" id="updateHomeTeamCity" value="${location}" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="updateAwayTeamName">Away Team Name *</label>
+                        <input type="text" id="updateAwayTeamName" value="${awayTeam}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateAwayTeamCity">Away Team City *</label>
+                        <input type="text" id="updateAwayTeamCity" placeholder="e.g., San Francisco" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="updateSportName">Sport Name *</label>
+                    <input type="text" id="updateSportName" value="${sport}" required>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="flex: 1;">Update Event</button>
+                    <button type="button" onclick="closeUpdateModal()" class="btn-danger" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+    
+    // Close modal when clicking outside of it
+    modal.onclick = function(event) {
+        if (event.target === modal) {
+            closeUpdateModal();
+        }
+    };
+}
+
+function closeUpdateModal() {
+    const modal = document.getElementById('updateModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+async function updateEvent(e, eventId) {
+    e.preventDefault();
+    
+    const eventData = {
+        date: document.getElementById('updateEventDate').value,
+        time: document.getElementById('updateEventTime').value,
+        home_team_name: document.getElementById('updateHomeTeamName').value,
+        home_team_city: document.getElementById('updateHomeTeamCity').value,
+        away_team_name: document.getElementById('updateAwayTeamName').value,
+        away_team_city: document.getElementById('updateAwayTeamCity').value,
+        sport_name: document.getElementById('updateSportName').value
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/info/events/${eventId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eventData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showMessage('Event updated successfully!', 'success');
+            closeUpdateModal();
+            fetchAllEvents();
+        } else {
+            showMessage(`Error: ${result.error}`, 'error');
+        }
+    } catch (error) {
+        showMessage(`Error updating event: ${error.message}`, 'error');
     }
 }
 
