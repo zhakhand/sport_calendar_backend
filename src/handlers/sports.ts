@@ -36,11 +36,12 @@ export const sportHandlers = {
         return reply.status(200).send(sports);
     },
 
-    eventsBySportId: async(request: FastifyRequest<{Params: {sportId: number}}>, reply: FastifyReply) => {
+    eventsBySportId: async(request: FastifyRequest<{Params: {sportId: string}}>, reply: FastifyReply) => {
         const db = await request.server.db;
         const { sportId } = request.params;
+        const sportIdNum = parseInt(sportId, 10);
 
-        if (!sportId || isNaN(sportId)) {
+        if (!sportId || isNaN(sportIdNum)) {
             return reply.status(400).send({error: "Valid Sport ID is required"});
         }
 
@@ -69,7 +70,7 @@ export const sportHandlers = {
                 JOIN teams at ON e._away_team_id = at.team_id
                 JOIN sports s ON e._sport_id = s.sport_id
                 WHERE e._sport_id = ?`,
-                [sportId],
+                [sportIdNum],
                 (err, rows) => {
                     if (err) {
                         reject(err);

@@ -4,7 +4,7 @@ export async function getOrCreateSport(db: any, sport_name: string): Promise<num
         db.get(
             `SELECT sport_id FROM sports WHERE sport_name = ?`,
             [sport_name],
-            (err, row) => {
+            (err: any, row: any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -22,7 +22,7 @@ export async function getOrCreateSport(db: any, sport_name: string): Promise<num
             db.run(
                 `INSERT INTO sports (sport_name) VALUES (?)`,
                 [sport_name],
-                function (this: any, err) {
+                function (this: any, err: any) {
                     if (err) {
                         reject(err);
                     } else {
@@ -41,7 +41,7 @@ export async function getOrCreateTeam(db: any, team_name: string, team_city: str
         db.get(
             `SELECT team_id FROM teams WHERE team_name = ? AND team_city = ?`,
             [team_name, team_city],
-            (err, row) => {
+            (err: any, row: any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -59,7 +59,7 @@ export async function getOrCreateTeam(db: any, team_name: string, team_city: str
             db.run(
                 `INSERT INTO teams (team_name, team_city) VALUES (?, ?)`,
                 [team_name, team_city],
-                function (this: any, err) {
+                function (this: any, err: any) {
                     if (err) {
                         reject(err);
                     } else {
