@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to the Sport Calendar</h1>
+            <p>Use the navigation to explore events.</p>
+        </header>
+    
+        <div class="content">
+            <div class="section">
+                <h2>Search Events</h2>
+                <div class="search-tabs">
+                    <button class="tab active" onclick="switchTab('all')">All Events</button>
+                    <button class="tab" onclick="switchTab('sport')">By Sport</button>
+                    <button class="tab" onclick="switchTab('team')">By Team</button>
+                    <button class="tab" onclick="switchTab('location')">By Location</button>
+                    <button class="tab" onclick="switchTab('date')">By Date</button>
+                    <button class="tab" onclick="switchTab('specific')">By Specific Event</button>
+                </div>
+                <div id="tab-all" class="tab-content active">
+                    <button onclick="fetchAllEvents()">Refresh Events</button>
+                </div>
+
+                <div id="tab-sport" class="tab-content">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="searchSport">Sport Name:</label>
+                            <input type="text" id="searchSport" placeholder="Enter sport name">
+                        </div>
+                        <button onclick="searchBySport()">Search by Sport</button>
+                    </div>
+                </div>
+                <div id="tab-team" class="tab-content">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="searchTeam">Team Name:</label>
+                            <input type="text" id="searchTeam" placeholder="Enter team name">
+                        </div>
+                        <button onclick="searchByTeam()">Search by Team</button>
+                    </div>
+                </div>
+                <div id="tab-location" class="tab-content">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="searchLocation">Location:</label>
+                            <input type="text" id="searchLocation" placeholder="Enter location">
+                        </div>
+                        <button onclick="searchByLocation()">Search by Location</button>
+                    </div>
+                </div>
+                <div id="tab-date" class="tab-content">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="searchDate">Date:</label>
+                            <input type="date" id="searchDate">
+                        </div>
+                        <button onclick="searchByDate()">Search by Date</button>
+                    </div>
+                </div>
+                <div id="tab-specific" class="tab-content">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="searchSpecificDate">Date:</label>
+                            <input type="date" id="searchSpecificDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchHomeTeam">Home Team Name:</label>
+                            <input type="text" id="searchHomeTeam" placeholder="Enter home team name">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchAwayTeam">Away Team Name:</label>
+                            <input type="text" id="searchAwayTeam" placeholder="Enter away team name">
+                        </div>
+                        <button onclick="searchBySpecific()">Search Specific Event</button>
+                    </div>
+                </div>
+                
+                <div id="message"></div>
+                <div id="eventsContainer" class="loading">Loading events...</div>
+            </div>
+            <div class="section">
+                <h2>Add New Event</h2>
+                <form class="add-form" onsubmit="addEvent(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventDate">Date *</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">Time *</label>
+                            <input type="time" id="eventTime" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="homeTeamName">Home Team Name *</label>
+                            <input type="text" id="homeTeamName" placeholder="e.g., Lakers" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="homeTeamCity">Home Team City *</label>
+                            <input type="text" id="homeTeamCity" placeholder="e.g., Los Angeles" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="awayTeamName">Away Team Name *</label>
+                            <input type="text" id="awayTeamName" placeholder="e.g., Warriors" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="awayTeamCity">Away Team City *</label>
+                            <input type="text" id="awayTeamCity" placeholder="e.g., San Francisco" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sportName">Sport Name *</label>
+                        <input type="text" id="sportName" placeholder="e.g., Basketball" required>
+                    </div>
+                    
+                    <button type="submit">Add Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
