@@ -32,9 +32,6 @@ rebuild: ## Rebuild and restart the application
 	docker compose up -d
 	@echo "Application rebuilt and running at http://localhost:3002"
 
-test: ## Run tests locally (not in Docker)
-	npm test
-
 shell: ## Open a shell in the running container
 	docker compose exec sport-calendar-api sh
 
